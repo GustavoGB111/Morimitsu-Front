@@ -1,12 +1,45 @@
 import Logo from "../assets/Logo.png";
 import Background from "../assets/Background.png";
 import { AiOutlineUser } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "../context/authContext";
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const { onLogin } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      // Certifique-se de que a API será chamada corretamente
+      const response = await onLogin(email, senha);
+
+      if (!response.error) {
+        // Login bem-sucedido, redireciona conforme o papel do usuário
+        const role = localStorage.getItem("role");
+
+        if (role === "admin") {
+          navigate("/HomeAdm");
+        } else if (role === "monitor") {
+          navigate("/HomeMonitor");
+        } else {
+          alert("Tipo de usuário desconhecido.");
+        }
+      } else {
+        // Se houver erro, exibe a mensagem do backend
+        alert(response.msg || "Erro desconhecido ao fazer login.");
+      }
+    } catch (error) {
+      // Caso ocorra algum erro inesperado
+      alert("Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde.");
+    }
+  };
+
   return (
     <div className="w-screen h-screen bg-cover bg-no-repeat bg-center flex items-center justify-center" 
-    style={{ backgroundImage: `url(${Background})` }}>
+         style={{ backgroundImage: `url(${Background})` }}>
       <div className="bg-black/80 w-screen h-screen flex items-center justify-center p-5">
         {/* Container principal */}
         <div className="flex flex-col md:flex-row bg-[#191A1C] rounded-[15px] items-center justify-center w-[1100px] h-[450px] md:h-[580px] p-5 md:p-0">
@@ -33,11 +66,13 @@ export default function Login() {
               type="text"
               placeholder="Email"
               className="w-full md:w-[550px] h-[45px] md:h-[60px] rounded-[15px] text-lg font-arimo text-white placeholder-white bg-[#6D6D6E] focus:outline-none focus:ring-2 focus:ring-[#6D6D6E] p-4"
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
               placeholder="Senha"
               className="w-full md:w-[550px] h-[45px] md:h-[60px] rounded-[15px] text-lg font-arimo text-white placeholder-white bg-[#6D6D6E] focus:outline-none focus:ring-2 focus:ring-[#6D6D6E] p-4"
+              onChange={(e) => setSenha(e.target.value)}
             />
 
             {/* Esqueceu a senha e botão de entrar */}
@@ -47,12 +82,9 @@ export default function Login() {
                   Esqueci a senha?
                 </div>
               </Link>
-              {/* Aqui faz aquela verificação e manda pro correto */}
-              <Link to="/HomeAdm">
-                <div className="w-full md:w-[120px] h-[50px] bg-[#BA1E22] rounded-[15px] flex items-center justify-center transition-all hover:scale-105 cursor-pointer mx-auto md:mx-0">
-                  <p className="text-white text-lg md:text-xl font-arimo">Entrar</p>
-                </div>
-              </Link>
+              <div className="w-full md:w-[120px] h-[50px] bg-[#BA1E22] rounded-[15px] flex items-center justify-center transition-all hover:scale-105 cursor-pointer mx-auto md:mx-0" onClick={handleLogin}>
+                <p className="text-white text-lg md:text-xl font-arimo">Entrar</p>
+              </div>
             </div>
           </div>
         </div>
