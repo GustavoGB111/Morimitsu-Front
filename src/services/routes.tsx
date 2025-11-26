@@ -42,18 +42,20 @@ import { type ReactNode } from "react";
 
 // Função para proteger rotas
 function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { authState } = useAuth();
+  const { authState, authReady } = useAuth();
 
-  if (authState.authenticated === null) {
+  if (!authReady) {
     return <div>Carregando...</div>;
   }
 
   if (!authState.authenticated) {
-    return <Navigate to="/Login" />;
+    return <Navigate to="/Login" replace />;
   }
 
   return <>{children}</>;
 }
+
+
 
 export default function AppRoutes() {
   return (

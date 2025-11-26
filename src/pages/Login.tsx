@@ -4,21 +4,28 @@ import { AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/authContext";
+import { Modal } from "./modal/modal";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const { onLogin } = useAuth();
   const navigate = useNavigate();
+  const [showSavedModal, setShowSavedModal] = useState(false);
+  const [msg, setMsg] = useState("");
 
   const handleLogin = async () => {
-      // Certifique-se de que a API será chamada corretamente
-      const response = await onLogin(email, senha);
-      if (response) {
-        navigate("/HomeAdm")
-      }
-  };
+    const res = await onLogin!(email, senha);
 
+    if (res.status !== 201) {
+      setMsg("Email ou senha incorretos!");
+      setShowSavedModal(true);
+      return;
+    }
+
+    navigate("/HomeAdm");
+  };
+  
   return (
     <div className="w-screen h-screen bg-cover bg-no-repeat bg-center flex items-center justify-center" 
          style={{ backgroundImage: `url(${Background})` }}>
@@ -71,6 +78,11 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <Modal
+        msg={msg}
+        showSavedModal={showSavedModal}
+        handleOk={() => setShowSavedModal(false)}
+      />
     </div>
   );
 }
