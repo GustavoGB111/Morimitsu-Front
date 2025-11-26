@@ -1,5 +1,4 @@
-import { Routes, Route, BrowserRouter as Router, Navigate } from "react-router-dom";
-
+import { Routes, Route, Navigate } from "react-router-dom";
 import Initial from "../pages/Initial";
 import Login from "../pages/Login";
 import ForgotPassword from "../pages/ForgotPassword";
@@ -38,193 +37,70 @@ import SpecificClassMonitor from "../PagesMonitor/SpecificClassMonitor";
 import ClassAttendanceMonitor from "../PagesMonitor/ClassAttendanceMonitor";
 import WarningsMonitor from "../PagesMonitor/WarningsMonitor";
 import StudentsFromClassMonitor from "../PagesMonitor/StudentsFromClassMonitor";
-import type { JSX } from "react";
 import { useAuth } from "../context/authContext";
+import { type ReactNode } from "react";
 
 // Função para proteger rotas
-function ProtectedRoute({ children }: { children: JSX.Element }) {
+function ProtectedRoute({ children }: { children: ReactNode }) {
   const { authState } = useAuth();
 
   if (authState.authenticated === null) {
-    // Isso garante que as rotas só sejam carregadas após a verificação do estado de autenticação
     return <div>Carregando...</div>;
   }
 
   if (!authState.authenticated) {
-    // Redireciona para a página de login se o usuário não estiver autenticado
     return <Navigate to="/Login" />;
   }
 
-  return children;
+  return <>{children}</>;
 }
 
 export default function AppRoutes() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Initial />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/ForgotPassword" element={<ForgotPassword />} />
-        <Route path="/InsertPin" element={<InsertPin />} />
+    <Routes>
+      <Route path="/" element={<Initial />} />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/ForgotPassword" element={<ForgotPassword />} />
+      <Route path="/InsertPin" element={<InsertPin />} />
 
-        {/* Rotas protegidas para Admin */}
-        <Route element={<LayoutAdm />}>
-          <Route path="/HomeAdm" element={
-            <ProtectedRoute>
-              <HomeAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/ProfileAdm" element={
-            <ProtectedRoute>
-              <ProfileAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/ProfileConfigAdm" element={
-            <ProtectedRoute>
-              <ProfileConfigAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/ClassAdm" element={
-            <ProtectedRoute>
-              <ClassAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/CreateClassAdm" element={
-            <ProtectedRoute>
-              <CreateClassAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/EditClassAdm" element={
-            <ProtectedRoute>
-              <EditClassAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/SpecificClassAdm" element={
-            <ProtectedRoute>
-              <SpecificClassAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/ClassAttendanceAdm" element={
-            <ProtectedRoute>
-              <ClassAttendanceAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/StudentsAdm" element={
-            <ProtectedRoute>
-              <StudentsAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/CreateStudentsAdm" element={
-            <ProtectedRoute>
-              <CreateStudentsAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/EditStudentsAdm" element={
-            <ProtectedRoute>
-              <EditStudentsAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/SpecificStudentAdm" element={
-            <ProtectedRoute>
-              <SpecificStudentAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/StudentsFromClassAdm" element={
-            <ProtectedRoute>
-              <StudentsFromClassAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/WarningsAdm" element={
-            <ProtectedRoute>
-              <WarningsAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/ControlGraduationAdm" element={
-            <ProtectedRoute>
-              <ControlGraduationAdm />
-            </ProtectedRoute>
-          } />
-          <Route path="/MonitorsAdm" element={
-            <ProtectedRoute>
-              <MonitorsAdm />
-            </ProtectedRoute>
-          } />
-        </Route>
+      {/* Rotas protegidas Admin */}
+      <Route element={<ProtectedRoute><LayoutAdm /></ProtectedRoute>}>
+        <Route path="/HomeAdm" element={<HomeAdm />} />
+        <Route path="/ProfileAdm" element={<ProfileAdm />} />
+        <Route path="/ProfileConfigAdm" element={<ProfileConfigAdm />} />
+        <Route path="/ClassAdm" element={<ClassAdm />} />
+        <Route path="/CreateClassAdm" element={<CreateClassAdm />} />
+        <Route path="/EditClassAdm" element={<EditClassAdm />} />
+        <Route path="/SpecificClassAdm" element={<SpecificClassAdm />} />
+        <Route path="/ClassAttendanceAdm" element={<ClassAttendanceAdm />} />
+        <Route path="/StudentsAdm" element={<StudentsAdm />} />
+        <Route path="/CreateStudentsAdm" element={<CreateStudentsAdm />} />
+        <Route path="/EditStudentsAdm" element={<EditStudentsAdm />} />
+        <Route path="/SpecificStudentAdm" element={<SpecificStudentAdm />} />
+        <Route path="/StudentsFromClassAdm" element={<StudentsFromClassAdm />} />
+        <Route path="/WarningsAdm" element={<WarningsAdm />} />
+        <Route path="/ControlGraduationAdm" element={<ControlGraduationAdm />} />
+        <Route path="/MonitorsAdm" element={<MonitorsAdm />} />
+      </Route>
 
-        {/* Rotas protegidas para Monitor */}
-        <Route element={<LayoutMonitor />}>
-          <Route path="/HomeMonitor" element={
-            <ProtectedRoute>
-              <HomeMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/StudentsMonitor" element={
-            <ProtectedRoute>
-              <StudentsMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/CreateStudentsMonitor" element={
-            <ProtectedRoute>
-              <CreateStudentsMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/ProfileMonitor" element={
-            <ProtectedRoute>
-              <ProfileMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/ProfileConfigMonitor" element={
-            <ProtectedRoute>
-              <ProfileConfigMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/SpecificStudentMonitor" element={
-            <ProtectedRoute>
-              <SpecificStudentMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/EditStudentsMonitor" element={
-            <ProtectedRoute>
-              <EditStudentsMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/MonitorsMonitor" element={
-            <ProtectedRoute>
-              <MonitorsMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/EditClassMonitor" element={
-            <ProtectedRoute>
-              <EditClassMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/ClassMonitor" element={
-            <ProtectedRoute>
-              <ClassMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/SpecificClassMonitor" element={
-            <ProtectedRoute>
-              <SpecificClassMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/ClassAttendanceMonitor" element={
-            <ProtectedRoute>
-              <ClassAttendanceMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/WarningsMonitor" element={
-            <ProtectedRoute>
-              <WarningsMonitor />
-            </ProtectedRoute>
-          } />
-          <Route path="/StudentsFromClassMonitor" element={
-            <ProtectedRoute>
-              <StudentsFromClassMonitor />
-            </ProtectedRoute>
-          } />
-        </Route>
-      </Routes>
-    </Router>
+      {/* Rotas protegidas Monitor */}
+      <Route element={<ProtectedRoute><LayoutMonitor /></ProtectedRoute>}>
+        <Route path="/HomeMonitor" element={<HomeMonitor />} />
+        <Route path="/StudentsMonitor" element={<StudentsMonitor />} />
+        <Route path="/CreateStudentsMonitor" element={<CreateStudentsMonitor />} />
+        <Route path="/ProfileMonitor" element={<ProfileMonitor />} />
+        <Route path="/ProfileConfigMonitor" element={<ProfileConfigMonitor />} />
+        <Route path="/SpecificStudentMonitor" element={<SpecificStudentMonitor />} />
+        <Route path="/EditStudentsMonitor" element={<EditStudentsMonitor />} />
+        <Route path="/MonitorsMonitor" element={<MonitorsMonitor />} />
+        <Route path="/EditClassMonitor" element={<EditClassMonitor />} />
+        <Route path="/ClassMonitor" element={<ClassMonitor />} />
+        <Route path="/SpecificClassMonitor" element={<SpecificClassMonitor />} />
+        <Route path="/ClassAttendanceMonitor" element={<ClassAttendanceMonitor />} />
+        <Route path="/WarningsMonitor" element={<WarningsMonitor />} />
+        <Route path="/StudentsFromClassMonitor" element={<StudentsFromClassMonitor />} />
+      </Route>
+
+    </Routes>
   );
 }
