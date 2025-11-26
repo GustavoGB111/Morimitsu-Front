@@ -17,7 +17,7 @@ export default function Login() {
   const handleLogin = async () => {
     const res = await onLogin!(email, senha);
 
-    if (res.status !== 201) {
+    if (res.data?.status !== 201) {
       setMsg("Email ou senha incorretos!");
       setShowSavedModal(true);
       return;
