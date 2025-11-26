@@ -37,7 +37,7 @@ import SpecificClassMonitor from "../PagesMonitor/SpecificClassMonitor";
 import ClassAttendanceMonitor from "../PagesMonitor/ClassAttendanceMonitor";
 import WarningsMonitor from "../PagesMonitor/WarningsMonitor";
 import StudentsFromClassMonitor from "../PagesMonitor/StudentsFromClassMonitor";
-import { useAuth } from "../context/authContext";
+import { AuthProvider, useAuth } from "../context/authContext";
 import { type ReactNode } from "react";
 
 // Função para proteger rotas
@@ -57,7 +57,8 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 
 export default function AppRoutes() {
   return (
-    <Routes>
+    <AuthProvider> 
+      <Routes>
       <Route path="/" element={<Initial />} />
       <Route path="/Login" element={<Login />} />
       <Route path="/ForgotPassword" element={<ForgotPassword />} />
@@ -101,6 +102,8 @@ export default function AppRoutes() {
         <Route path="/StudentsFromClassMonitor" element={<StudentsFromClassMonitor />} />
       </Route>
 
+
     </Routes>
+    </AuthProvider>
   );
 }

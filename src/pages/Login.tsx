@@ -12,29 +12,11 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
       // Certifique-se de que a API será chamada corretamente
       const response = await onLogin(email, senha);
-
-      if (!response.error) {
-        // Login bem-sucedido, redireciona conforme o papel do usuário
-        const role = localStorage.getItem("role");
-
-        if (role === "admin") {
-          navigate("/HomeAdm");
-        } else if (role === "monitor") {
-          navigate("/HomeMonitor");
-        } else {
-          alert("Tipo de usuário desconhecido.");
-        }
-      } else {
-        // Se houver erro, exibe a mensagem do backend
-        alert(response.msg || "Erro desconhecido ao fazer login.");
+      if (response) {
+        navigate("/HomeAdm")
       }
-    } catch (error) {
-      // Caso ocorra algum erro inesperado
-      alert("Ocorreu um erro ao tentar fazer login. Tente novamente mais tarde.");
-    }
   };
 
   return (
