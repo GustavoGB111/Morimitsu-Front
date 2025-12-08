@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/authContext";
 
 export default function ProfileConfigAdm() {
   const [showModal, setShowModal] = useState(false);
-  const [showSavedModal, setShowSavedModal] = useState(false);
+  const [showSavedModal] = useState(false);
 
   const handleSendCode = () => {
     setShowModal(true);
@@ -13,10 +14,11 @@ export default function ProfileConfigAdm() {
     setShowModal(false);
   };
 
-  const handleSave = () => {
-    setShowModal(false);
-    setShowSavedModal(true);
-  };
+  const {onChange} = useAuth() 
+  const [email, setEmail] = useState("")
+  const userName = async () => {
+    await onChange(email)
+  }
 
   return (
     <div className="w-full h-screen md:h-full bg-black flex justify-center items-center p-5 md:p-0">
@@ -31,6 +33,7 @@ export default function ProfileConfigAdm() {
 
           {/* Input de Nome */}
           <input
+            onChange={(e) => setEmail(e.target.value)}
             type="text"
             placeholder="Nome"
             className="w-full h-[45px] rounded-[10px] text-lg font-arimo text-white placeholder-white bg-[#434343] focus:outline-none focus:ring-2 focus:ring-[#434343] p-4 m-2"
@@ -80,7 +83,7 @@ export default function ProfileConfigAdm() {
               </div>
 
               {/* Botão de aceitar */}
-              <div onClick={handleSave} className="w-full md:w-[100px] flex justify-center">
+              <div onClick={userName} className="w-full md:w-[100px] flex justify-center">
                 <div className="w-[90px] md:w-[120px] h-[45px] bg-[#BA1E22] rounded-[10px] flex items-center justify-center transition-all hover:scale-105 cursor-pointer">
                   <p className="text-white text-lg md:text-xl font-arimo">
                     Alterar

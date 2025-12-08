@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
@@ -11,12 +13,11 @@ const api = axios.create({
 interface AuthState {
   token: string | null;
   authenticated: boolean | null;
-  username: string | null;
 }
 
 interface ApiResponse {
   error: boolean;
-  msg?: string;
+  msg: string;
   status?: number;
   data?: any;
 }
@@ -26,6 +27,7 @@ interface AuthProps {
   authReady: boolean;
   onLogin: (email: string, password: string) => Promise<ApiResponse>;
   onLogout: () => Promise<void>;
+  onChange: (email: string) => Promise<ApiResponse>;
 }
 
 const AuthContext = createContext<AuthProps | undefined>(undefined);
@@ -40,8 +42,7 @@ export const useAuth = (): AuthProps => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>({
     token: null,
-    authenticated: null,
-    username: null,
+    authenticated: null
   });
 
   const [authReady, setAuthReady] = useState(false);
@@ -49,70 +50,137 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Carrega dados do localStorage
   useEffect(() => {
     const token = localStorage.getItem("my-jwt");
-    const username = localStorage.getItem("username");
 
     if (token) {
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       setAuthState({
         token,
-        authenticated: true,
-        username: username || null,
+        authenticated: true
       });
     } else {
       setAuthState({
         token: null,
-        authenticated: false,
-        username: null,
+        authenticated: false
       });
     }
 
     setAuthReady(true);
   }, []);
 
-  const login = async (email: string, password: string): Promise<ApiResponse> => {
-    try {
-      const result = await api.post(`/auth/login`, { email, password });
+const login = async (email: string, password: string): Promise<ApiResponse> => {
+  try {
+    const result = await api.post(`/auth/login`, { email, password });
 
-      // Status HTTP REAL
-      const httpStatus = result.status;
+    const status = result.status; // <-- STATUS DO AXIOS
 
-      if (httpStatus === 200 || httpStatus === 201) {
-        const { token, user } = result.data;
+    switch (status) {
+      case 201: {
+        const { token } = result.data;
 
         localStorage.setItem("my-jwt", token);
-        localStorage.setItem("username", user.username);
-        localStorage.setItem("role", user.role);
 
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
         setAuthState({
           token,
           authenticated: true,
-          username: user.username,
         });
 
-        return { error: false, status: httpStatus, data: user };
+        return {
+          error: false,
+          msg: "Usuário logado com sucesso",
+          status
+        };
       }
 
-      return { error: true, msg: "Erro inesperado no login" };
-    } catch (e: any) {
+      default:
+        return {
+          error: true,
+          msg: `Status inesperado (${status})`,
+          status,
+        };
+    }
+
+  } catch (error: any) {
+
+    // Esses status vêm do AXIOS, mesmo sem vir no body
+    const status = error.response?.status || 0;
+
+    // Comparação com os códigos da imagem
+    if (status === 400) {
       return {
         error: true,
-        status: e.response?.status,
-        msg: e.response?.data?.message || "Erro no servidor",
+        msg: "Senha incorreta",
+        status,
       };
     }
-  };
+
+    if (status === 404) {
+      return {
+        error: true,
+        msg: "Usuário não encontrado",
+        status,
+      };
+    }
+
+    if (status === 422) {
+        return {
+        error: true,
+        msg: "Formato de Email inválido",
+        status,
+      };
+    }
+
+    if (status === 500) {
+      return {
+        error: true,
+        msg: "Erro desconhecido no servidor",
+        status,
+      };
+    }
+
+    // Se não chegar em nenhum
+    return {
+      error: true,
+      msg: "Erro inesperado",
+      status,
+    };
+  }
+};
 
   const logout = async (): Promise<void> => {
     localStorage.clear();
     delete api.defaults.headers.common["Authorization"];
     setAuthState({
       token: null,
-      authenticated: false,
-      username: null,
+      authenticated: false
     });
   };
+
+  const change = async (name: string): Promise<ApiResponse> => {
+    const token = localStorage.getItem("my-jwt")
+    const res = await api.put(`/user/update`, { name, headers:{Authorization:`Bearer${token}`} }) 
+    const status = res.status
+    
+    switch (status) {
+      case 200: {
+        const { name } = res.data;
+
+        localStorage.setItem("name", name);
+
+        return {
+          error: false,
+          msg: "Usuário logado com sucesso",
+          status
+        };
+      }
+
+      default:
+        return {
+          error: true,
+          msg: `Status inesperado (${status})`,
+        };
+    }
+  } 
 
   return (
     <AuthContext.Provider
@@ -121,6 +189,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         authReady,
         onLogin: login,
         onLogout: logout,
+        onChange: change
       }}
     >
       {children}

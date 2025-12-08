@@ -14,17 +14,42 @@ export default function Login() {
   const [showSavedModal, setShowSavedModal] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const handleLogin = async () => {
-    const res = await onLogin!(email, senha);
+const handleLogin = async () => {
+  const res = await onLogin(email, senha);
 
-    if (res.data?.status !== 201) {
-      setMsg("Email ou senha incorretos!");
-      setShowSavedModal(true);
+  console.log("RETORNO DO LOGIN:", res);
+
+  switch (res.status) {
+
+    case 201:
+      // LOGIN OK
+      navigate("/HomeAdm");
       return;
-    }
 
-    navigate("/HomeAdm");
-  };
+    case 400:
+      setMsg("Senha incorreta");
+      break;
+
+    case 404:
+      setMsg("Usuário não encontrado");
+      break;
+
+    case 422:
+      setMsg("Formato de Email inválido");
+      break;
+
+    case 500:
+      setMsg("Erro desconhecido no servidor");
+      break;
+
+    default:
+      setMsg("Erro inesperado");
+      break;
+  }
+
+  setShowSavedModal(true);
+};
+
   
   return (
     <div className="w-screen h-screen bg-cover bg-no-repeat bg-center flex items-center justify-center" 
