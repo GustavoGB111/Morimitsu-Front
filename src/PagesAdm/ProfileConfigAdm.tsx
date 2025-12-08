@@ -16,9 +16,12 @@ export default function ProfileConfigAdm() {
 
   const {onChange} = useAuth() 
   const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const userName = async () => {
-    await onChange(email)
+    await onChange(email, password)
   }
+
+  
 
   return (
     <div className="w-full h-screen md:h-full bg-black flex justify-center items-center p-5 md:p-0">
@@ -40,6 +43,7 @@ export default function ProfileConfigAdm() {
           />
           {/* Input de Senha */}
           <input
+            onChange={(e) => setPassword(e.target.value)}
             type="Password"
             placeholder="Senha"
             className="w-full h-[45px] rounded-[10px] text-lg font-arimo text-white placeholder-white bg-[#434343] focus:outline-none focus:ring-2 focus:ring-[#434343] p-4 m-2"

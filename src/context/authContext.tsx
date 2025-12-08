@@ -27,7 +27,8 @@ interface AuthProps {
   authReady: boolean;
   onLogin: (email: string, password: string) => Promise<ApiResponse>;
   onLogout: () => Promise<void>;
-  onChange: (email: string) => Promise<ApiResponse>;
+  onChange: (email: string, password: string) => Promise<ApiResponse>;
+  onPassword: (password: string) => Promise<ApiResponse>;
 }
 
 const AuthContext = createContext<AuthProps | undefined>(undefined);
@@ -156,9 +157,9 @@ const login = async (email: string, password: string): Promise<ApiResponse> => {
     });
   };
 
-  const change = async (name: string): Promise<ApiResponse> => {
+  const change = async (name: string, password: string): Promise<ApiResponse> => {
     const token = localStorage.getItem("my-jwt")
-    const res = await api.put(`/user/update`, { name, headers:{Authorization:`Bearer${token}`} }) 
+    const res = await api.put(`/user/update`, { name, password, headers:{Authorization:`Bearer${token}`} }) 
     const status = res.status
     
     switch (status) {
@@ -182,6 +183,30 @@ const login = async (email: string, password: string): Promise<ApiResponse> => {
     }
   } 
 
+  const changePassword = async (password: string): Promise<ApiResponse> => {
+    const token = localStorage.getItem("my-jwt")
+    const res = await api.put(`/user/update`, { password, headers:{Authorization:`Bearer${token}`} }) 
+    const status = res.status
+    
+    switch (status) {
+      case 200: {
+
+
+        return {
+          error: false,
+          msg: "Usuário logado com sucesso",
+          status
+        };
+      }
+
+      default:
+        return {
+          error: true,
+          msg: `Status inesperado (${status})`,
+        };
+    }
+  } 
+
   return (
     <AuthContext.Provider
       value={{
@@ -189,7 +214,8 @@ const login = async (email: string, password: string): Promise<ApiResponse> => {
         authReady,
         onLogin: login,
         onLogout: logout,
-        onChange: change
+        onChange: change,
+        onPassword: changePassword
       }}
     >
       {children}
