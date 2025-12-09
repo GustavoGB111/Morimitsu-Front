@@ -29,6 +29,7 @@ interface AuthProps {
   onLogout: () => Promise<void>;
   onChange: (email: string, password: string) => Promise<ApiResponse>;
   onPassword: (password: string) => Promise<ApiResponse>;
+  onRequest: (email: string) => Promise<ApiResponse>;
 }
 
 const AuthContext = createContext<AuthProps | undefined>(undefined);
@@ -183,28 +184,113 @@ const login = async (email: string, password: string): Promise<ApiResponse> => {
     }
   } 
 
-  const changePassword = async (password: string): Promise<ApiResponse> => {
-    const token = localStorage.getItem("my-jwt")
-    const res = await api.put(`/user/update`, { password, headers:{Authorization:`Bearer${token}`} }) 
-    const status = res.status
-    
+const requestRecovery = async (email: string): Promise<ApiResponse> => {
+  try {
+    const res = await api.post(`/auth/requestRecovery`, { email });
+    const status = res.status;
+
     switch (status) {
-      case 200: {
-
-
+      case 201:
         return {
           error: false,
-          msg: "Usuário logado com sucesso",
-          status
+          msg: "Código enviado com sucesso",
+          status,
         };
-      }
-
       default:
         return {
           error: true,
           msg: `Status inesperado (${status})`,
+          status,
         };
     }
+  } catch (error: any) {
+    const status = error.response?.status || 0;
+
+    if (status === 404) {
+      return {
+        error: true,
+        msg: "Usuário não encontrado",
+        status,
+      };
+    }
+
+    if (status === 500) {
+      return {
+        error: true,
+        msg: "Erro desconhecido no servidor",
+        status,
+      };
+    }
+    // <-- retorno padrão que faltava
+    return {
+      error: true,
+      msg: "Erro inesperado",
+      status,
+    };
+  }
+};
+
+
+  const changePassword = async (password: string): Promise<ApiResponse> => {
+    try {
+      const res = await api.put(`/auth/recoverPassword`, { password }) 
+      const status = res.status
+      
+      switch (status) {
+        case 200: {
+          return {
+            error: false,
+            msg: "Senha alterada com sucesso",
+            status
+          };
+        }
+        default:
+          return {
+            error: true,
+            msg: `Status inesperado (${status})`,
+          };
+      }
+    } catch (error: any) {
+      const status = error.response?.status || 0;
+
+    if (status === 403) {
+      return {
+        error: true,
+        msg: "Token não fornecido",
+        status,
+      };
+    }
+
+    if (status === 404) {
+      return {
+        error: true,
+        msg: "Usuário não encontrado",
+        status,
+      };
+    }
+
+    if (status === 422) {
+        return {
+        error: true,
+        msg: "Formato de Email inválido",
+        status,
+      };
+    }
+
+    if (status === 500) {
+      return {
+        error: true,
+        msg: "Erro desconhecido no servidor",
+        status,
+      };
+    }
+    // Se não chegar em nenhum
+    return {
+      error: true,
+      msg: "Erro inesperado",
+      status,
+    };
+  }
   } 
 
   return (
@@ -215,7 +301,8 @@ const login = async (email: string, password: string): Promise<ApiResponse> => {
         onLogin: login,
         onLogout: logout,
         onChange: change,
-        onPassword: changePassword
+        onPassword: changePassword,
+        onRequest: requestRecovery
       }}
     >
       {children}
