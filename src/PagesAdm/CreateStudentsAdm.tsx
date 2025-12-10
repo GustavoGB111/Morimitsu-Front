@@ -46,7 +46,7 @@ export default function CreateStudentsAdm() {
       guardianName: emailResponsavel,
       phoneNumber: telefone1,
       guardianNumber: telResp1,
-      beltId: faixa,
+      beltId: `${faixa}-${grau}`,
     });
 
     setShowModal(false);
@@ -210,12 +210,23 @@ export default function CreateStudentsAdm() {
               className="w-full h-[35px] rounded-[5px] text-md font-arimo text-white bg-[#434343] px-3"
             >
               <option value="">Selecione a cor</option>
-              <option value="branco">Branco</option>
+              <option value="branca">Branco</option>
               <option value="azul">Azul</option>
-              <option value="roxo">Roxo</option>
+              <option value="roxa">Roxo</option>
               <option value="marrom">Marrom</option>
-              <option value="preto">Preto</option>
+              <option value="preta">Preto</option>
               <option value="cinza">Cinza</option>
+              <option value="cinza-branco">Cinza-Branco</option>
+              <option value="cinza-preto">Cinza-Preto</option>
+              <option value="amarelo">Amarelo</option>
+              <option value="amarelo-branco">Amarelo-Branco</option>
+              <option value="amarelo-preto">Amarelo-Preto</option>
+              <option value="laranja">Laranja</option>
+              <option value="laranja-branco">Laranja-Branco</option>
+              <option value="laranja-preto">Laranja-Preto</option>
+              <option value="verde">Verde</option>
+              <option value="verde-branco">Verde-Branco</option>
+              <option value="verde-preto">Verde-Preto</option>
             </select>
 
             <select
@@ -224,10 +235,10 @@ export default function CreateStudentsAdm() {
               className="w-full h-[35px] rounded-[5px] text-md font-arimo text-white bg-[#434343] px-3"
             >
               <option value="">Selecione o grau</option>
-              <option value="grau 0">grau 0</option>
-              <option value="grau 1">grau 1</option>
-              <option value="grau 2">grau 2</option>
-              <option value="grau 3">grau 3</option>
+              <option value="0">grau 0</option>
+              <option value="1">grau 1</option>
+              <option value="2">grau 2</option>
+              <option value="3">grau 3</option>
             </select>
           </div>
 

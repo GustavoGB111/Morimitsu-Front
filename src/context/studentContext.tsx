@@ -20,8 +20,10 @@ interface ApiResponse {
 interface studentProps {
   onRegisterStudent: (data: any) => Promise<ApiResponse>;
   onDeleteStudent: (id: number) => Promise<ApiResponse>;
-  onPutStudent: (id: number) => Promise<ApiResponse>;
+  onPutStudent: (id: number, data: any) => Promise<ApiResponse>;
   onGetStudent: () => Promise<ApiResponse>;
+  onGetStudentByBirthday: () => Promise<ApiResponse>;
+  onGetStudentGradable: () => Promise<ApiResponse>;
 }
 
 interface StudentProviderProps {
@@ -37,7 +39,6 @@ export const useStudent = (): studentProps => {
   return context;
 };
 
-// POST — criar aluno
 // POST — criar aluno
 const registerStudent = async (studentData: {
   cpf: string;
@@ -62,7 +63,7 @@ const registerStudent = async (studentData: {
       birthday: studentData.birthday,
       nickname: studentData.nickname,
       currentFq: studentData.currentFq,
-      fullname: studentData.fullname,
+      fullName: studentData.fullname,
       guardianName: studentData.guardianName,
       phoneNumber: studentData.phoneNumber,
       guardianNumber: studentData.guardianNumber,
@@ -73,7 +74,6 @@ const registerStudent = async (studentData: {
     Authorization: `Bearer ${token}`
       }
     }
-
 );
 
     const { id } = result.data;
@@ -126,9 +126,42 @@ const deleteStudent = async (id: number): Promise<ApiResponse> => {
 };
 
 // PUT — atualizar aluno
-const putStudent = async (id: number): Promise<ApiResponse> => {
+const putStudent = async (id: number, studentData: {
+  cpf: string;
+  age: number;
+  gender: "man" | "woman";
+  birthday: string;
+  nickname: string;
+  currentFq: number;
+  fullname: string;
+  guardianName: string;
+  phoneNumber: string;
+  guardianNumber: string;
+  beltId: string;
+}): Promise<ApiResponse> => {
+  
   try {
-    const result = await api.put(`/student/${id}`);
+
+    const token = localStorage.getItem("my-jwt")
+
+    const result = await api.put(`/student/update/${id}`, {
+      cpf: studentData.cpf,
+      age: studentData.age,
+      gender: studentData.gender,
+      birthday: studentData.birthday,
+      nickname: studentData.nickname,
+      currentFq: studentData.currentFq,
+      fullName: studentData.fullname,
+      guardianName: studentData.guardianName,
+      phoneNumber: studentData.phoneNumber,
+      guardianNumber: studentData.guardianNumber,
+      beltId: studentData.beltId,
+    },
+    {
+    headers: {
+    Authorization: `Bearer ${token}`
+      }
+    });
 
     return {
       error: false,
@@ -143,6 +176,7 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
 
     if (status === 400) msg = data?.message || "Requisição inválida.";
     else if (status === 404) msg = data?.message || "Aluno não encontrado.";
+    else if (status === 409) msg = data?.message || "CPF já está em uso.";
     else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
     else if (status >= 500) msg = "Erro interno no servidor.";
 
@@ -154,7 +188,65 @@ const putStudent = async (id: number): Promise<ApiResponse> => {
 const getStudent = async (): Promise<ApiResponse> => {
   try {
     const token = localStorage.getItem("token");
-    const res = await api.get(`/student`, {
+    const res = await api.get(`/student/search`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      error: false,
+      msg: res.data?.message || "Estudantes encontrados!",
+      data: res.data,
+    };
+  } catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    let msg = "Erro ao buscar alunos.";
+
+    if (status === 400) msg = data?.message || "Requisição inválida.";
+    else if (status === 404) msg = data?.message || "Nenhum aluno encontrado.";
+    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) msg = "Erro interno no servidor.";
+
+    return { error: true, status, msg };
+  }
+};
+
+const getStudentByBirthday = async (): Promise<ApiResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await api.get(`/student/search/birthday`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      error: false,
+      msg: res.data?.message || "Estudantes encontrados!",
+      data: res.data,
+    };
+  } catch (e: any) {
+    const status = e.response?.status;
+    const data = e.response?.data;
+
+    let msg = "Erro ao buscar alunos.";
+
+    if (status === 400) msg = data?.message || "Requisição inválida.";
+    else if (status === 404) msg = data?.message || "Nenhum aluno encontrado.";
+    else if (status === 422) msg = data?.message || "Erro de validação (Zod).";
+    else if (status >= 500) msg = "Erro interno no servidor.";
+
+    return { error: true, status, msg };
+  }
+};
+
+const getStudentGradable = async (): Promise<ApiResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await api.get(`/student/search/gradable`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -186,6 +278,8 @@ export const StudentProvider = ({ children }: StudentProviderProps) => {
     onDeleteStudent: deleteStudent,
     onPutStudent: putStudent,
     onGetStudent: getStudent,
+    onGetStudentByBirthday: getStudentByBirthday,
+    onGetStudentGradable: getStudentGradable
   };
 
   return (

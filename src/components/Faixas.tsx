@@ -5,22 +5,22 @@ export default function FaixaAluno({ faixa }: { faixa: string }) {
     roxo: { cor: "bg-[#800080]", secundaria: null },
     marrom: { cor: "bg-[#63300C]", secundaria: null },
     preto: { cor: "bg-black", secundaria: null },
+    
     cinza: { cor: "bg-[#808080]", secundaria: null },
-
-    "cinza-branco": { cor: "bg-[#808080]", secundaria: "bg-white" },
-    "cinza-preto": { cor: "bg-[#808080]", secundaria: "bg-black" },
+    "cinza-branca": { cor: "bg-[#808080]", secundaria: "bg-white" },
+    "cinza-preta": { cor: "bg-[#808080]", secundaria: "bg-black" },
 
     amarelo: { cor: "bg-[#FFD700]", secundaria: null },
-    "amarelo-branco": { cor: "bg-[#FFD700]", secundaria: "bg-white" },
-    "amarelo-preto": { cor: "bg-[#FFD700]", secundaria: "bg-black" },
+    "amarela-branca": { cor: "bg-[#FFD700]", secundaria: "bg-white" },
+    "amarela-preta": { cor: "bg-[#FFD700]", secundaria: "bg-black" },
 
     laranja: { cor: "bg-[#FF8C00]", secundaria: null },
-    "laranja-branco": { cor: "bg-[#FF8C00]", secundaria: "bg-white" },
-    "laranja-preto": { cor: "bg-[#FF8C00]", secundaria: "bg-black" },
+    "laranja-branca": { cor: "bg-[#FF8C00]", secundaria: "bg-white" },
+    "laranja-preta": { cor: "bg-[#FF8C00]", secundaria: "bg-black" },
 
     verde: { cor: "bg-[#008000]", secundaria: null },
-    "verde-branco": { cor: "bg-[#008000]", secundaria: "bg-white" },
-    "verde-preto": { cor: "bg-[#008000]", secundaria: "bg-black" },
+    "verde-branca": { cor: "bg-[#008000]", secundaria: "bg-white" },
+    "verde-preta": { cor: "bg-[#008000]", secundaria: "bg-black" },
   };
 
   const faixaInfo = faixas[faixa as keyof typeof faixas] || faixas["branco"];
