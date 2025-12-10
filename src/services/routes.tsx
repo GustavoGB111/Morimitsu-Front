@@ -39,6 +39,7 @@ import WarningsMonitor from "../PagesMonitor/WarningsMonitor";
 import StudentsFromClassMonitor from "../PagesMonitor/StudentsFromClassMonitor";
 import { AuthProvider, useAuth } from "../context/authContext";
 import { type ReactNode } from "react";
+import { StudentProvider } from "../context/studentContext";
 
 // Função para proteger rotas
 function ProtectedRoute({ children }: { children: ReactNode }) {
@@ -59,6 +60,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
 
 export default function AppRoutes() {
   return (
+    <StudentProvider>
     <AuthProvider> 
       <Routes>
       <Route path="/" element={<Initial />} />
@@ -107,5 +109,6 @@ export default function AppRoutes() {
 
     </Routes>
     </AuthProvider>
+    </StudentProvider>
   );
 }
