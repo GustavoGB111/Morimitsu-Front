@@ -199,10 +199,10 @@ const getStudent = async (studentData: {
     let query = ""
     let itsFirst = true
 
-    if (!!studentData.cpf) {
+    if (studentData.cpf) {
       query = `${query}cpf=${studentData.cpf}`
     }
-    if (!!studentData.minAge) {
+    if (studentData.minAge) {
       if (itsFirst === true) {
         query = `${query}minAge=${studentData.minAge}`
         itsFirst = false
@@ -210,7 +210,7 @@ const getStudent = async (studentData: {
         query = `${query}&minAge=${studentData.minAge}`
       }
     }
-    if (!!studentData.maxAge) {
+    if (studentData.maxAge) {
       if (itsFirst === true) {
         query = `${query}maxAge=${studentData.maxAge}`
         itsFirst = false
@@ -218,7 +218,7 @@ const getStudent = async (studentData: {
         query = `${query}&maxAge=${studentData.maxAge}`
       }
     }
-    if (!!studentData.gender) {
+    if (studentData.gender) {
       if (itsFirst === true) {
         query = `${query}gender=${studentData.gender}`
         itsFirst = false
@@ -226,7 +226,7 @@ const getStudent = async (studentData: {
         query = `${query}&gender=${studentData.gender}`
       }
     }
-    if (!!studentData.nickname) {
+    if (studentData.nickname) {
       if (itsFirst === true) {
         query = `${query}nickname=${studentData.nickname}`
         itsFirst = false
@@ -234,7 +234,7 @@ const getStudent = async (studentData: {
         query = `${query}&nickname=${studentData.nickname}`
       }
     }
-    if (!!studentData.guardianName) {
+    if (studentData.guardianName) {
       if (itsFirst === true) {
         query = `${query}guardianName=${studentData.guardianName}`
         itsFirst = false
@@ -242,7 +242,7 @@ const getStudent = async (studentData: {
         query = `${query}&guardianName=${studentData.guardianName}`
       }
     }
-    if (!!studentData.phoneNumber) {
+    if (studentData.phoneNumber) {
       if (itsFirst === true) {
         query = `${query}phoneNumber=${studentData.phoneNumber}`
         itsFirst = false
@@ -250,7 +250,7 @@ const getStudent = async (studentData: {
         query = `${query}&phoneNumber=${studentData.phoneNumber}`
       }
     }
-    if (!!studentData.beltId) {
+    if (studentData.beltId) {
       if (itsFirst === true) {
         query = `${query}beltId=${studentData.beltId}`
         itsFirst = false
