@@ -167,7 +167,7 @@ const getStudentsOfClass = async (classId: string): Promise<ApiResponse> => {
     return {
       error: false,
       msg: result.data?.message || "Estudante encontrado com sucesso!",
-      data: result.data?.message
+      data: result.data
     };
     
   } catch (e: any) {
@@ -220,7 +220,7 @@ const getClass = async (data: {
     return {
       error: false,
       msg: result.data?.message || "Classe encontrada com sucesso!",
-      data: result.data?.message
+      data: result.data
     };
     
   } catch (e: any) {
