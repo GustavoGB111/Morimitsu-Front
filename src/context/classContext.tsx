@@ -34,7 +34,7 @@ const ClassContext = createContext<classProps | undefined>(undefined);
 export const useClass = (): classProps => {
   const context = useContext(ClassContext);
   if (!context)
-    throw new Error("useUser deve ser usado dentro de um <UserProvider>");
+    throw new Error("useClass deve ser usado dentro de um <ClassProvider>");
   return context;
 };
 
